@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:io' as system;
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 // this is a test to make sure our tests consider engine crashes to be failures
@@ -12,14 +12,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('test smoke test -- this test should fail', () async {
     if (system.Process.killPid(system.pid, system.ProcessSignal.sigsegv)) {
-      print('system.Process.killPid returned before the process ended!');
-      print(
+      debugPrint('system.Process.killPid returned before the process ended!');
+      debugPrint(
         'Sleeping for a few seconds just in case signal delivery is delayed or our signal handler is being slow...',
       );
-      system.sleep(const Duration(seconds: 10)); // don't sleep too much, we must not time out
+      system.sleep(const Duration(seconds: 10));
     } else {
-      print('system.Process.killPid reports that the SIGSEGV signal was not delivered!');
     }
-    print('crash1_test.dart will now probably not crash, which will ruin the test.');
+    debugPrint('crash1_test.dart will now probably not crash, which will ruin the test.');
   });
 }

@@ -6,6 +6,11 @@ linter:
 
     # Tests try to throw and catch things in exciting ways all the time, so
     # we disable these lints for the tests.
+    # Setting to allow throwing non-Error objects (e.g., strings, exceptions)
+    # When set to false, the linter will not enforce that only Error objects are thrown
+    # This is useful for projects that use custom exception patterns or legacy code
     only_throw_errors: false
     avoid_catching_errors: false
     avoid_catches_without_on_clauses: false
+    implementation_imports: true
+

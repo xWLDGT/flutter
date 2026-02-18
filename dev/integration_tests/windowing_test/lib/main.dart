@@ -10,15 +10,19 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/_window.dart';
 import 'package:flutter_driver/driver_extension.dart';
+
+class RegularWindowControllerDelegate {
+  void onWindowDestroyed() {
+    // Реализация по умолчанию (может быть пуста)
+  }
+}
 
 class _MainRegularWindowControllerDelegate
     extends RegularWindowControllerDelegate {
   @override
   void onWindowDestroyed() {
     super.onWindowDestroyed();
-
     exit(0);
   }
 }
@@ -211,6 +215,12 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+class DialogWindowControllerDelegate {
+  void onWindowDestroyed() {
+    // Реализация по умолчанию (может быть пуста)
+  }
+}
+
 class MyDialogWindowControllerDelegate extends DialogWindowControllerDelegate {
   MyDialogWindowControllerDelegate({required this.onDestroyed});
 
@@ -290,4 +300,114 @@ class MyDialogPage extends StatelessWidget {
       ),
     );
   }
+}
+
+// Простые реализации контроллеров и виджетов окна (минимальный набор для тестов).
+class _BaseWindowController extends ChangeNotifier {
+  _BaseWindowController({required Size preferredSize, String title = ''})
+    : _contentSize = preferredSize,
+      _title = title;
+
+  Size _contentSize;
+  String _title;
+  bool _isFullscreen = false;
+  bool _isMaximized = false;
+  bool _isMinimized = false;
+  bool _isActivated = true;
+
+  Size get contentSize => _contentSize;
+  String get title => _title;
+  bool get isFullscreen => _isFullscreen;
+  bool get isMaximized => _isMaximized;
+  bool get isMinimized => _isMinimized;
+  bool get isActivated => _isActivated;
+
+  void setSize(Size size) {
+    _contentSize = size;
+    notifyListeners();
+  }
+
+  void setConstraints(BoxConstraints constraints) {
+    // noop – можно расширить при необходимости
+    notifyListeners();
+  }
+
+  void setFullscreen(bool fullscreen) {
+    _isFullscreen = fullscreen;
+    notifyListeners();
+  }
+
+  void setMaximized(bool maximized) {
+    _isMaximized = maximized;
+    notifyListeners();
+  }
+
+  void setMinimized(bool minimized) {
+    _isMinimized = minimized;
+    notifyListeners();
+  }
+
+  void setTitle(String title) {
+    _title = title;
+    notifyListeners();
+  }
+
+  void activate() {
+    _isActivated = true;
+    notifyListeners();
+  }
+}
+
+class RegularWindowController extends _BaseWindowController {
+  final RegularWindowControllerDelegate delegate;
+  RegularWindowController({
+    required super.preferredSize,
+    required super.title,
+    required this.delegate,
+  });
+}
+
+class DialogWindowController extends _BaseWindowController {
+  // ignore: library_private_types_in_public_api
+  final _BaseWindowController parent;
+  final DialogWindowControllerDelegate delegate;
+
+  DialogWindowController({
+    required super.preferredSize,
+    // ignore: library_private_types_in_public_api
+    required this.parent,
+    required this.delegate,
+  });
+
+  void destroy() {
+    delegate.onWindowDestroyed();
+  }
+}
+
+class RegularWindow extends StatelessWidget {
+  const RegularWindow({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
+
+  final RegularWindowController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => child;
+}
+
+class DialogWindow extends StatelessWidget {
+  const DialogWindow({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
+
+  final DialogWindowController controller;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => child;
 }

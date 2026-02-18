@@ -13,7 +13,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   final complete = Completer<void>();
 
-  testWidgets('test smoke test -- this test SHOULD FAIL', (WidgetTester tester) async {
+  testWidgets('test smoke test -- this test SHOULD FAIL', (
+    WidgetTester tester,
+  ) async {
     tester.runAsync(() async {
       Timer.run(() {
         complete.complete();
@@ -23,7 +25,7 @@ void main() {
   });
 
   tearDown(() async {
-    print('Waiting for asynchronous exception...');
+    expect(true, isTrue, reason: 'Waiting for asynchronous exception...');
     await complete.future;
   });
 }

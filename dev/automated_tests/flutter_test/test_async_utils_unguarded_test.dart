@@ -9,6 +9,7 @@ class TestTestBinding extends AutomatedTestWidgetsFlutterBinding {
   @override
   DebugPrintCallback get debugPrintOverride => testPrint;
   static void testPrint(String? message, {int? wrapWidth}) {
+    // ignore: avoid_print
     print(message);
   }
 }
