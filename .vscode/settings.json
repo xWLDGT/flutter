@@ -6,5 +6,8 @@
         "master"
     ],
     "files.trimTrailingWhitespace": true,
-    "dart.showTodos": false
+    "dart.showTodos": false,
+    "git.autofetch": true,
+    "workbench.settings.enableNaturalLanguageSearch": true,
+    "typescript.disableAutomaticTypeAcquisition": true
 }
